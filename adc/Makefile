@@ -1,5 +1,5 @@
 
-LINUXDIR := /home/sky/share/linux-3.14/
+LINUXDIR := /home/sky/share/kernel/linux-3.14.25/
 PWD := $(shell pwd)
 
 obj-m := adc.o

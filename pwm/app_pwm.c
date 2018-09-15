@@ -5,12 +5,16 @@
 
 int main(int argc, const char *argv[])
 {
-	int fd = open("pwm", O_RDWR);
-	
+	int fd = 0; 
 	int flag = 11;
+	fd = open("/dev/pwm", O_RDWR);
+	if (fd == -1) {
+		perror("open");
+		return fd;
+	}
 
 	ioctl(fd, 10, flag);
-
+	while(1);
 
 	return 0;
 }

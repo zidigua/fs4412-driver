@@ -1,4 +1,5 @@
 #include <linux/module.h>
+#include <linux/device.h>
 #include <linux/cdev.h>
 #include <linux/slab.h>
 #include <linux/fs.h>
@@ -38,6 +39,9 @@ struct pwm_cdev {
 	struct cdev *dev;
 	unsigned char *GPD0_0;
 	struct pwm_s *PWM;    /*0x139D0000*/
+
+	struct class *cls;
+	struct device *test_device;
 
 	int flag;
 };
@@ -132,8 +136,22 @@ static __init int pwm_init(void)
 	}
 	pwm->GPD0_0 = ioremap(0x114000A0, sizeof(unsigned short)); 
 	pwm->PWM = ioremap(0x139D0000, sizeof(struct pwm_s));
-	
+
+	pwm->cls = class_create(THIS_MODULE, "my_pwm_class");
+	if (IS_ERR(pwm->cls)) 
+		goto err_class;
+
+	pwm->test_device = device_create(pwm->cls, NULL, pwm->dev_no, NULL, "pwm");
+	if (IS_ERR(pwm->test_device)) 
+		goto err_device;
+
 	return 0;
+
+err_device:
+	class_destroy(pwm->cls);
+err_class:
+	iounmap(pwm->PWM);
+	iounmap(pwm->GPD0_0);
 err_add:
 	cdev_del(pwm->dev);
 err_dev:
@@ -146,8 +164,10 @@ err_alloc:
 
 static __exit void pwm_exit(void)
 {
-	iounmap(pwm->GPD0_0);
+	device_del(pwm->test_device);
+	class_destroy(pwm->cls);
 	iounmap(pwm->PWM);
+	iounmap(pwm->GPD0_0);
 	cdev_del(pwm->dev);
 	unregister_chrdev_region(pwm->dev_no, 1);
 	kfree(pwm);

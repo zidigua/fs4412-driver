@@ -145,7 +145,7 @@ static struct my_adc *alloc_adc (void)
 		goto err_class;
 
     padc->test_device = device_create(padc->cls, NULL, padc->dev_no, NULL, "hello");  //mknod /dev/hello
-    if(IS_ERR(padc->test_device))
+    if (IS_ERR(padc->test_device))
        goto err_device;
 
 

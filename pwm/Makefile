@@ -1,8 +1,8 @@
 
-KERNELDIR := /home/sky/share/linux-3.14/
+KERNELDIR := /home/sky/linux-3.14-git/
 DIR := $(shell pwd)
 
-obj-m := cdev_pwm.o
+obj-m := pwm.o
 
 default:
 	$(MAKE) -C $(KERNELDIR) M=$(DIR) modules
@@ -11,4 +11,5 @@ default:
 
 clean:
 	$(MAKE) -C $(KERNELDIR) M=$(DIR) clean
+	rm app_pwm
 

@@ -1,5 +1,5 @@
 
-KERNELDIR := /home/sky/share/linux-3.14/
+KERNELDIR := /home/sky/linux-3.14-git/
 PWD := $(shell pwd)
 
 obj-m := key.o
